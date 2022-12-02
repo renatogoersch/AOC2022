@@ -1,7 +1,7 @@
 os.chdir(r"C:\Users\Renato Parente\Documents\AdventOfCode\AOC2022\Day1")
 
 # LOAD AND CLEAN DATA
-with open('input_day1.csv') as file:
+with open('input_day1_2.csv') as file:
     input_day1 = [line.rstrip() for line in file]
 
 for i in range(len(input_day1)):
