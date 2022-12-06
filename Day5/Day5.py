@@ -82,7 +82,6 @@ def move2(qtd,wfrom,wto,stacks):
     #print(s_to_move)
     for i in range(qtd):
         to_move = s_to_move[-1]
-        #print(to_move)
         s_to_move.pop(-1)
         #print(to_move)
         stacks[wfrom-1].pop(len(s_to_move))

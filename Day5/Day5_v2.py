@@ -27,11 +27,9 @@ def create_stacks():
             newstack.insert(0, letter)
         while ' ' in newstack:
             newstack.remove(' ')
-        #stacks.append(newstack)
         stacks.append(list(reversed(newstack)))
     return stacks
 
-stacks = create_stacks()
 
 def move(qtd,wfrom,wto,stacks,version):
     if version == 1:
