@@ -9,9 +9,6 @@ input_day8 = input_day8.drop(labels=[0, 100], axis=1)
 #input_day8 = input_day8.drop(labels=[0, 6], axis=1)
 input_day8.index = input_day8.index + 1
 
-count = 0
-higher_x = 0
-higher_y = 0
 
 def check_higher(height,df_height):
     list_height = []
@@ -101,12 +98,10 @@ def Left_view(height,df_height):
 
 def Top_view(height,df_height):
     df_height = Reverse(df_height)
-    print(df_height)
     count = 0
     list_height = []
     for sublist in df_height:
         list_height.append(int(sublist))
-    print(list_height)
     for n in list_height:
         if height > n:
             count += 1
@@ -137,7 +132,6 @@ def get_view(x,y,input):
             input.iloc[0:x,y])
     else:
         top_view = 0
-    #print(str(right_view) + "," + str(down_view) + "," + str(left_view) + "," + str(top_view))
     return (right_view * down_view * left_view * top_view)
 
 def call_step1(input_day8):
@@ -146,7 +140,6 @@ def call_step1(input_day8):
     for x in range(0,len(input_day8)):
         for y in range(0,len(input_day8.columns)):
             view_value = get_view(x,y,input_day8)
-            print(view_value)
             if view_value > highest_view_value:
                 highest_view_value = view_value
             if x == 0 or x == len(input_day8)-1:
@@ -156,7 +149,6 @@ def call_step1(input_day8):
             else:
                 is_visible = check_is_visible(x,y,input_day8) 
                 if is_visible == True:
-                    #print(str(x) + "," + str(y) + " - " + input_day8.iloc[x,y])
                     count += 1
     return count,highest_view_value
 
