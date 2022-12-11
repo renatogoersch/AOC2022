@@ -67,7 +67,6 @@ class Monkeys:
             else:
                 monkeys[self.if2].throw(nworry)
         self.items = []
-
     def throw(self,item):
         self.items.append(item)
 
