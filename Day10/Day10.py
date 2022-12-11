@@ -9,7 +9,6 @@ for n in range(0,len(input_day10)):
     if ' ' in input_day10[n]:
         cycles += 2
         add_value = [cycles,int(input_day10[n].split(" ")[1])]
-        #print("to-add when " + str(add_value))
         values_to_add.insert(0,add_value)
     else:
         cycles += 1
