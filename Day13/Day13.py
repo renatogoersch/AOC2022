@@ -1,3 +1,5 @@
+import ast
+
 with open('input_day13.csv') as file:
 #with open('ti.csv') as file:
     input_day13 = [line.rstrip() for line in file]
