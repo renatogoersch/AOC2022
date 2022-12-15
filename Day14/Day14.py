@@ -1,5 +1,5 @@
-with open('input_day14.csv') as file:
-#with open('ti.csv') as file:
+#with open('input_day14.csv') as file:
+with open('ti.csv') as file:
     input_day14 = [line.rstrip() for line in file]
 import numpy as np
 
