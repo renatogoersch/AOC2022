@@ -3,7 +3,7 @@ with open('input_day14.csv') as file:
     input_day14 = [line.rstrip() for line in file]
 import numpy as np
 
-grid = [[' ' for c in range(700)] for r in range(700)]
+grid = [[' ' for c in range(1000)] for r in range(700)]
 
 max_x = 500
 min_x = 500
@@ -29,9 +29,11 @@ def create_rocks(rock_loc):
             min_x = x_1
 
         if y_1 > max_y:
-            max_y = y_1
+            #part1 max_y = y_1
+            max_y = y_1 + 2
         if y_2 > max_y:
-            max_y = y_2
+            #part1 max_y = y_1
+            max_y = y_2 + 2
 
         if x_1 == x_2:
             if (y_2 > y_1):
@@ -60,10 +62,10 @@ def printx():
     global grid
     cox = 0
     for n in grid:
-        #print(n[492:512])
-        print(n[492:560])
+        print(n[489:512])
+        #print(n[120:190])
         cox+=1
-        if cox>180:
+        if cox>15:
             break
 
 class Sand:
@@ -71,13 +73,12 @@ class Sand:
         self.x = position[0]
         self.y = position[1]
 
-    def moved(self, abyss):
+    def moved(self):
         global grid, max_y, q
         if self.y-1 > max_y:
             print(self.y,self.x)
             q=None
             return
-        #print(self.y,max_y)
         down = grid[self.y+1][self.x]
         down_left = grid[self.y+1][self.x-1]
         left = grid[self.y][self.x-1]
@@ -85,85 +86,29 @@ class Sand:
         right = grid[self.y][self.x+1]
         if down == " ":
             grid[self.y][self.x] = ' '
-            self.y += 1
-            print("md", self.x, self.y)
+            self.y+=1
             grid[self.y][self.x] = 'o'
-            down = grid[self.y+1][self.x]
-            self.moved(abyss)
-        elif down == "o":
-            self.movedl(abyss)
-        elif down == "#" and left == ' ' and down_left == ' ':
-            self.x -= 1
-            self.y += 1
-            grid[self.y-1][self.x+1] = ' '
+            self.moved()
+        elif down_left == " ":
+            grid[self.y][self.x] = ' '
+            self.x-=1
+            self.y+=1
             grid[self.y][self.x] = 'o'
-            self.moved(abyss)
-        elif down == "#" and right == ' ' and down_right == ' ':
-            self.x += 1
-            self.y += 1
-            grid[self.y+1][self.x+1] = ' '
+            self.moved()
+        elif down_right == " ":
+            grid[self.y][self.x] = ' '
+            self.x+=1
+            self.y+=1
             grid[self.y][self.x] = 'o'
-            self.moved(abyss)
+            self.moved()
 
-    def movedl(self, abyss):
-        global grid
-        #left = grid[self.y][self.x-1]
-        down_left = grid[self.y+1][self.x-1]
-        left_left = grid[self.y][self.x-2]
-        if down_left == " ":
-            print("ml", self.x, self.y)
-            self.x -= 1
-            self.y += 1
-            grid[self.y-1][self.x+1] = ' '
-            grid[self.y][self.x] = 'o'
-            res = self.path_right()
-            if res == True:
-                self.movedl(abyss)
-            else:
-                self.moved(abyss)
-        else:
-            self.movedr(abyss)
-
-    def movedr(self, abyss):
-        global grid
-        right = grid[self.y][self.x+1]
-        right_right = grid[self.y][self.x+2]
-        down_right = grid[self.y+1][self.x+1]
-        if down_right == " ":
-            print("mr",self.x,self.y)
-            self.x += 1
-            self.y += 1
-            grid[self.y-1][self.x-1] = ' '
-            grid[self.y][self.x] = 'o'
-            res = self.path_right()
-            if res == True:
-                self.movedr(abyss)
-            else:
-                self.moved(abyss)
-    
-    def path_right(self):
-        global grid
-        down_right = grid[self.y+1][self.x+1]
-        down_down_right = grid[self.y+2][self.x+1]
-        if down_right == " " and down_down_right == " ":
-            return True
-        else:
-            return False
-    
-    def path_left(self):
-        global grid
-        down_left = grid[self.y+1][self.x-1]
-        down_down_left = grid[self.y+2][self.x-1]
-        if down_left == " " and down_down_left == " ":
-            return True
-        else:
-            return False
-
-def create_sand(abyss):
+        
+        
+def create_sand():
     global grid
-    #printx()
+    printx()
     sand = Sand((500,0))
-    sand.moved(abyss)
+    sand.moved()
 
 
 for n in range(len(input_day14)):
@@ -185,15 +130,32 @@ for n in range(len(grid)):
             abyss = (n,count2)
             break
 
-#for y in range(len(grid)):
-    #for x in range(len(grid[y])):
-        #if x == max_x+1 or x == min_x-1:
-            #grid[y][x] = '#'
+for y in range(len(grid)):
+    for x in range(len(grid[y])):
+        if x == 500-max_y:
+            grid[y][x] = '#'
+        if x == 500+max_y:
+            grid[y][x] = '#'
+        if y == max_y:
+            grid[y][x] = '#'
 
 snows=0
 q = True
 while q!=None:
+    end_left = grid[max_y-1][500-max_y+1]
+    end_right = grid[max_y-1][500+max_y-1]
+    left = grid[max_y-1][500-max_y+1]
+
+    down = grid[1][499]
+    down_left = grid[1][500]
+    down_right = grid[1][501]
+    if end_left == 'o' and end_right == 'o' and down == 'o' and down_left == 'o' and down_right == 'o':
+        print("FINISH")
+        grid[0][500] = 'o'
+        q=None
     snows+=1
-    resultx = create_sand(abyss)
-    print(snows-1)
+    resultx = create_sand()
+    #if snows > 100:
+        #q = None
+    print(snows)
     print(grid[500][1])
