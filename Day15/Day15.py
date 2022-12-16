@@ -38,7 +38,7 @@ for row in input_day15:
     dist_x = abs(int(sensor_x) - int(beacon_x))
     dist = int(distm((sensor_x,sensor_y),(beacon_x,beacon_y)))
     #print(dist)
-    valuex = 11
+    valuex = 2000000
     #print("Sensor:",sensor_x,sensor_y)
     #print("Beacon:",beacon_x,beacon_y)
     #print("Distancia:",str(dist))
@@ -79,8 +79,6 @@ xy_sensor = list(dict.fromkeys(xy_sensor))
 #print(len(places))
 #print(len(xy_beacon))
 
-results = [k for k in places if k not in xy_beacon]
-results = [k for k in results if k not in xy_sensor]
 print(len(results))
 
 
