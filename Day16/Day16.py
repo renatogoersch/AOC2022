@@ -66,7 +66,7 @@ while person.Time > 0:
     person.move()
 
 grid = [['' for c in valves] for r in valves]
-INF = 999
+INF = 1000
 n = 0
 for v1 in valves:
     i = 0  
