@@ -22,8 +22,8 @@ Rocks
 """
 from operator import attrgetter
 
-#with open('day17_input.csv') as file:
-with open('ti.csv') as file:
+with open('day17_input.csv') as file:
+#with open('ti.csv') as file:
     jets = [line.rstrip() for line in file]
 
 import numpy as np
@@ -358,9 +358,9 @@ class square:
             for r in self.rocks:
                 r.move_left()
 
-def printx(y,r):
-    range1 = y-r
-    range2 = y+5
+def printx(y,r,rr):
+    range1 = y
+    range2 = maxy
     if range1 < 0:
         range1 = 0 
     if range2 > maxy:
@@ -368,6 +368,7 @@ def printx(y,r):
     for yy in range(range1,range2):
         #print(yy)
         print(yy,grid[yy])
+    print("-----------------------------------------------")
 
 def next_rock(next_drop):
     if next_drop == '_':
@@ -396,7 +397,7 @@ to_jet = refill_jet(to_jet)
 
 tall = []
 old_drop = 0
-while drop < 2122:
+while drop < 2022:
     drop += 1
     #print("drop",next_drop)
     rock,next_drop = next_rock(next_drop)
@@ -415,9 +416,9 @@ while drop < 2122:
             tally = maxy-i
             break
     tall.append((drop,tally,tally/drop))
-    print(drop,"-------------- move ---------------")
+    #printx(born,5,10)
+    #print(drop,"-------------- move ---------------")
 
-printx(maxy,10000)
 
 for i in range(len(grid)):
     if '#' in grid[i]:
@@ -433,7 +434,7 @@ for n in range(4,len(grid)):
             if grid[n-3] == grid[maxy-4]:
                 if grid[n-4] == grid[maxy-5]:
                     if grid[n-5] == grid[maxy-6]:
-                        print(n,old_n)
+                        #print(n,old_n)
                         pat.append((n,n-old_n))
                         old_n = n
 
@@ -441,26 +442,15 @@ pat.reverse()
 grid2 = grid
 grid2 = [n for n in grid if n != grid[2]]
 
-c=0
-for n in range(len(grid)):
-    #print(grid[n:n+26])
-    if grid[n:n+26] == dups:
-        c += 1
-        print(c)
-        if c == len(dups):
-            print(n)
-            c = 0
-#grid2
+#total = 1000000000000
 
-total = 1000000000000
+#first_steps = tall[pat[0]][1]
+#p1 = (tall[pat[1]+pat[1]][1] - tall[pat[1]][1])
 
-first_steps = tall[pat[0]][1]
-p1 = (tall[pat[1]+pat[1]][1] - tall[pat[1]][1])
+##p2 = ((total - first_steps) // pat[1])
 
-p2 = ((total - first_steps) // pat[1])
+#loops_steps = p1 * p2
 
-loops_steps = p1 * p2
+##final_steps = tall[(total - first_steps) % pat[1]][1]
 
-final_steps = tall[(total - first_steps) % pat[1]][1]
-
-print(first_steps + loops_steps + final_steps)
+#print(first_steps + loops_steps + final_steps)
