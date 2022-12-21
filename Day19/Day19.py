@@ -1,6 +1,35 @@
-with open('input_day19.csv') as file:
-#with open('ti.csv') as file:
+import random
+#with open('input_day19.csv') as file:
+with open('ti.csv') as file:
     input = [line.rstrip() for line in file]
+
+def permutation(lst):
+    if len(lst) == 0:
+        return []
+    if len(lst) == 1:
+        return [lst]
+    l = []
+    for i in range(len(lst)):
+       m = lst[i]
+       remLst = lst[:i] + lst[i+1:]
+       for p in permutation(remLst):
+           l.append([m] + p)
+    return l
+ 
+data1 = list('1000')
+data2 = list('1100')
+data3 = list('1110')
+data4 = list('1111')
+data5 = list('0000')
+pos = permutation(data1)
+data2 = permutation(data2)
+data3 = permutation(data3)
+for n in data2:
+    pos.append(n)
+for n in data3:
+    pos.append(n)
+pos.append(data4)
+pos.append(data5)
 
 class ore_robot_recipe:
     def __init__(self,ore):
@@ -20,11 +49,13 @@ class geode_robot_recipe:
         self.ore = ore
         self.obs = obs
 
+
+
 class Blueprint:
     def __init__(self,blueprint,ore_robot,clay_robot,obsidian_robot_rO,
         obsidian_robot_rC,geode_robot_rO,geode_robot_rOB):
             self.bp = blueprint
-            self.minutes = 24
+            self.minutes = 0
             orr = ore_robot_recipe(ore_robot)
             crr = clay_robot_recipe(clay_robot)
             obrr = obisidian_robot_recipe(obsidian_robot_rO,obsidian_robot_rC)
@@ -45,7 +76,7 @@ class Blueprint:
             self.geode = 0
             self.max_geode = []
 
-            print("Created a Blueprint number",self.bp)
+            #print("Created a Blueprint number",self.bp)
 
     def collect(self):
         self.ore += 1*self.robot_ore
@@ -53,27 +84,40 @@ class Blueprint:
         self.obs += 1*self.robot_obs
         self.geode += 1*self.robot_geode
 
-    def upgrade_geode(self):
-        if self.ore > self.recipe_grr.ore and self.obs > self.recipe_grr.obs:
-            self.ore -= self.recipe_grr.ore
-            self.obs -= self.recipe_grr.obs
-            self.robot_geode += 1
+    def upgrade_geode(self,todo):
+        if todo == '1':
+            #print("geode upgrade")
+            #print("ore",self.ore,self.recipe_grr.ore)
+            #print("obs",self.obs,self.recipe_grr.obs)
+            if self.ore >= self.recipe_grr.ore and self.obs >= self.recipe_grr.obs:
+                self.ore -= self.recipe_grr.ore
+                self.obs -= self.recipe_grr.obs
+                self.robot_geode += 1
 
-    def upgrade_obs(self):
-        if self.ore > self.recipe_obrr.ore and self.clay > self.recipe_obrr.clay:
-            self.ore -= self.recipe_obrr.ore
-            self.clay -= self.recipe_obrr.clay
-            self.robot_obs += 1
+    def upgrade_obs(self,todo):
+        if todo == '1':
+            if self.ore >= self.recipe_obrr.ore and self.clay >= self.recipe_obrr.clay and self.robot_obs < 2:
+                #print("obs upgrade")
+                #print("ore",self.ore,self.recipe_obrr.ore)
+                #print("obs",self.clay,self.recipe_obrr.clay)
+                self.ore -= self.recipe_obrr.ore
+                self.clay -= self.recipe_obrr.clay
+                self.robot_obs += 1
+
         
-    def upgrade_clay(self):
-        if self.ore > self.recipe_obrr.ore:
-            self.ore -= self.recipe_obrr.ore
-            self.robot_clay += 1
+    def upgrade_clay(self,todo):
+        if todo == '1' and self.robot_clay < 4:
+            if self.ore >= self.recipe_crr.ore:
+                self.ore -= self.recipe_crr.ore
+                self.robot_clay += 1
 
-    def upgrade_ore(self):
-        if self.ore > self.recipe_obrr.ore:
-            self.ore -= self.recipe_obrr.ore
-            self.robot_ore += 1
+
+    def upgrade_ore(self,todo):
+        if todo == '1' and self.robot_ore < 1:
+            if self.ore >= self.recipe_orr.ore:
+                self.ore -= self.recipe_orr.ore
+                self.robot_ore += 1
+
 
     def reset(self):
         self.robot_ore = 1
@@ -86,16 +130,77 @@ class Blueprint:
         self.obs = 0
         self.geode = 0
         
+
     def simulate(self):
-        self.upgrade_geode()
-        self.upgrade_obs()
-        self.upgrade_clay()
-        self.upgrade_ore()
+        global max_geode, max_obs, max_clay, max_ore
+        restore = [self.robot_ore, self.robot_clay,
+        self.robot_obs, self.robot_geode,
+        self.ore, self.clay,
+        self.obs, self.geode, self.minutes]
 
+        to_check = pos
+        to_do = [[[],'']]*24
+        to_real_do = []*24
+        self.minutes = 0
+        while self.minutes < 24:
+            for n in to_check:
+                self.collect
+                self.restore(restore)
+                self.upgrade_geode(n)
+                self.upgrade_obs(n)
+                self.upgrade_clay(n)
+                self.upgrade_ore(n)
+                #print("check",self.robot_geode,max_geode)
+                ##print(n)
+                #print("bp",self.robot_geode,self.robot_obs,self.robot_clay,self.robot_ore)
+                #print("max",max_geode,max_obs,max_clay,max_ore)
+                print(self.minutes)
+                to_do[self.minutes-1][0].append(n)
+                to_do[self.minutes-1][1] = self.robot_geode
+                self.minutes += 1
+                print(self.minutes)
 
+                #else:
+                #    if (self.robot_obs > max_obs):
+                #        max_obs = self.robot_obs
+                #        to_do = n
+                #    else:
+                #        if (self.robot_clay > max_clay):
+                #            max_clay = self.robot_clay
+                #            to_do = n
+                #        else:
+                #            if (self.robot_ore > max_ore):
+                #                max_ore = self.robot_ore
+                #                to_do = n
+                #print("finish")
+                #print("finish2")
+                #print("finish3")
+                #print("finish4")
 
+        #print("Max",max_geode,max_obs,max_clay,max_obs)
+        #print("ROBOS    -",self.robot_geode,self.robot_obs,self.robot_clay,self.robot_ore)
+        #print("ROSOURCE -",max_geode,max_obs,max_clay,max_ore)
+        #print("TODO:    -",n)
+        self.restore(restore)
+        return to_do
 
-        self.minutes -= 1
+    def cicle(self, to_do):
+        print(to_do)
+        self.upgrade_geode(to_do[self.minutes])
+        self.upgrade_obs(to_do[self.minutes])
+        self.upgrade_clay(to_do[self.minutes])
+        self.upgrade_ore(to_do[self.minutes])
+        
+                
+    def restore(self,restore):
+        self.robot_ore = restore[0]
+        self.robot_clay = restore[1]
+        self.robot_obs = restore[2]
+        self.robot_geode = restore[3]
+        self.ore = restore[4]
+        self.clay = restore[5]
+        self.obs = restore[6]
+        self.geode = restore[7]
 
 blueprints = []
 for n in range(len(input)):
@@ -108,23 +213,40 @@ for n in range(len(input)):
     geode_robot_rO = int(mining[3].split(" ")[4])
     geode_robot_rOB = int(mining[3].split(" ")[7])
 
-
     blueprints.append(Blueprint(blueprint,ore_robot,clay_robot,obsidian_robot_rO,
         obsidian_robot_rC,geode_robot_rO,geode_robot_rOB))
-    
 
-upgrade = ['geode', 'obs', 'clay', 'ore']
-from itertools import combinations
-print(combinations(upgrade,4))
+#Blueprint 1: 
+ #Each ore robot costs 4 ore.
+ #Each clay robot costs 2 ore.
+ #Each obsidian robot costs 3 ore and 14 clay.
+ #Each geode robot costs 2 ore and 7 obsidian.
 
-for n in list(combinations(upgrade,4)):
-    print(n)
+#Blueprint 2: 
+#Each ore robot costs 2 ore.
+#Each clay robot costs 3 ore. 
+#Each obsidian robot costs 3 ore and 8 clay.
+#Each geode robot costs 3 ore and 12 obsidian.
 
-for i,k,k,l in 
+
 for bp in blueprints:
-    while bp.minutes > 0:
-        bp.collect()
-        bp.simulate()
+    max_geode = bp.robot_geode
+    max_obs = bp.robot_obs
+    max_clay = bp.robot_clay
+    max_ore = bp.robot_ore
+    bp.minutes = 24
+    to_do = bp.simulate()
+    #while bp.minutes > 0:
+        #bp.collect()
+        #bp.cicle(to_do)
+        #print("----",bp.bp,"----")
+        #print("Minute",bp.minutes)
+        #print("ores:",bp.ore,"robos:",bp.robot_ore)
+        #print("clay:",bp.clay,"robos:",bp.robot_clay)
+        #print("obs:",bp.obs,"robos:",bp.robot_obs)
+       # print("geodes:",bp.geode,"robos:",bp.robot_geode)
+        #print("--------")
+        #bp.minutes -= 1
 
 sum = 0
 for bp in blueprints:
@@ -133,35 +255,6 @@ for bp in blueprints:
     print(bp.bp,bp.geode,bp.bp*bp.geode)
     print("--------------")
     sum += bp.bp*bp.geode
-print(sum)
-
-
-
-s_location = [k for k, v in input.items() if v == -13][0]
-finish_location = [k for k, v in input.items() if v == -27][0]
-
-input[s_location], input[finish_location] = 1, 26
-
-def bfs(input):
-    visited = {finish_location: 0}
-    queue = [finish_location]
-    while queue:
-        (x, y) = queue.pop(0)
-        check_moves = [(x-1, y), (x+1, y), (x, y+1), (x, y-1)]
-        for move in check_moves:
-            if (move in input and not move in visited) and input[(x, y)] - input[move] <= 1:
-                visited[move] = visited[(x, y)] + 1
-                queue.append(move)
-    return(visited, s_location)
-
-d, s= bfs(input)
-print(d[s])
-
-low_value = 450
-input2 = dict()
-for n in input.items():
-    if input[n[0]] == 1 and n[0] in d and d[n[0]] < low_value:
-        low_value = d[n[0]]
-print(low_value)
-
+    print(sum)
+#print(sum)
 

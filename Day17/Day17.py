@@ -358,6 +358,9 @@ class square:
             for r in self.rocks:
                 r.move_left()
 
+import time
+start_time = time.time()
+
 def printx(y,r,rr):
     range1 = y
     range2 = maxy
@@ -454,3 +457,6 @@ grid2 = [n for n in grid if n != grid[2]]
 ##final_steps = tall[(total - first_steps) % pat[1]][1]
 
 #print(first_steps + loops_steps + final_steps)
+
+
+print("--- %s seconds ---" % (time.time() - start_time))
