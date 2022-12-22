@@ -86,9 +86,6 @@ class Blueprint:
 
     def upgrade_geode(self,todo):
         if todo == '1':
-            #print("geode upgrade")
-            #print("ore",self.ore,self.recipe_grr.ore)
-            #print("obs",self.obs,self.recipe_grr.obs)
             if self.ore >= self.recipe_grr.ore and self.obs >= self.recipe_grr.obs:
                 self.ore -= self.recipe_grr.ore
                 self.obs -= self.recipe_grr.obs
@@ -97,9 +94,6 @@ class Blueprint:
     def upgrade_obs(self,todo):
         if todo == '1':
             if self.ore >= self.recipe_obrr.ore and self.clay >= self.recipe_obrr.clay and self.robot_obs < 2:
-                #print("obs upgrade")
-                #print("ore",self.ore,self.recipe_obrr.ore)
-                #print("obs",self.clay,self.recipe_obrr.clay)
                 self.ore -= self.recipe_obrr.ore
                 self.clay -= self.recipe_obrr.clay
                 self.robot_obs += 1
@@ -150,37 +144,26 @@ class Blueprint:
                 self.upgrade_obs(n)
                 self.upgrade_clay(n)
                 self.upgrade_ore(n)
-                #print("check",self.robot_geode,max_geode)
-                ##print(n)
-                #print("bp",self.robot_geode,self.robot_obs,self.robot_clay,self.robot_ore)
-                #print("max",max_geode,max_obs,max_clay,max_ore)
                 print(self.minutes)
                 to_do[self.minutes-1][0].append(n)
                 to_do[self.minutes-1][1] = self.robot_geode
                 self.minutes += 1
                 print(self.minutes)
-
-                #else:
-                #    if (self.robot_obs > max_obs):
-                #        max_obs = self.robot_obs
-                #        to_do = n
-                #    else:
-                #        if (self.robot_clay > max_clay):
-                #            max_clay = self.robot_clay
-                #            to_do = n
-                #        else:
-                #            if (self.robot_ore > max_ore):
-                #                max_ore = self.robot_ore
-                #                to_do = n
-                #print("finish")
-                #print("finish2")
-                #print("finish3")
-                #print("finish4")
-
-        #print("Max",max_geode,max_obs,max_clay,max_obs)
-        #print("ROBOS    -",self.robot_geode,self.robot_obs,self.robot_clay,self.robot_ore)
-        #print("ROSOURCE -",max_geode,max_obs,max_clay,max_ore)
-        #print("TODO:    -",n)
+                if (self.robot_geode > max_geode):
+                    max_geode = self.robot_geode
+                    to_do = n
+                else:
+                    if (self.robot_obs > max_obs):
+                        max_obs = self.robot_obs
+                        to_do = n
+                    else:
+                        if (self.robot_clay > max_clay):
+                            max_clay = self.robot_clay
+                            to_do = n
+                        else:
+                            if (self.robot_ore > max_ore):
+                                max_ore = self.robot_ore
+                                to_do = n
         self.restore(restore)
         return to_do
 
@@ -216,19 +199,6 @@ for n in range(len(input)):
     blueprints.append(Blueprint(blueprint,ore_robot,clay_robot,obsidian_robot_rO,
         obsidian_robot_rC,geode_robot_rO,geode_robot_rOB))
 
-#Blueprint 1: 
- #Each ore robot costs 4 ore.
- #Each clay robot costs 2 ore.
- #Each obsidian robot costs 3 ore and 14 clay.
- #Each geode robot costs 2 ore and 7 obsidian.
-
-#Blueprint 2: 
-#Each ore robot costs 2 ore.
-#Each clay robot costs 3 ore. 
-#Each obsidian robot costs 3 ore and 8 clay.
-#Each geode robot costs 3 ore and 12 obsidian.
-
-
 for bp in blueprints:
     max_geode = bp.robot_geode
     max_obs = bp.robot_obs
@@ -236,17 +206,17 @@ for bp in blueprints:
     max_ore = bp.robot_ore
     bp.minutes = 24
     to_do = bp.simulate()
-    #while bp.minutes > 0:
-        #bp.collect()
-        #bp.cicle(to_do)
-        #print("----",bp.bp,"----")
-        #print("Minute",bp.minutes)
-        #print("ores:",bp.ore,"robos:",bp.robot_ore)
-        #print("clay:",bp.clay,"robos:",bp.robot_clay)
-        #print("obs:",bp.obs,"robos:",bp.robot_obs)
-       # print("geodes:",bp.geode,"robos:",bp.robot_geode)
-        #print("--------")
-        #bp.minutes -= 1
+    while bp.minutes > 0:
+        bp.collect()
+        bp.cicle(to_do)
+        print("----",bp.bp,"----")
+        print("Minute",bp.minutes)
+        print("ores:",bp.ore,"robos:",bp.robot_ore)
+        print("clay:",bp.clay,"robos:",bp.robot_clay)
+        print("obs:",bp.obs,"robos:",bp.robot_obs)
+        print("geodes:",bp.geode,"robos:",bp.robot_geode)
+        print("--------")
+        bp.minutes -= 1
 
 sum = 0
 for bp in blueprints:
